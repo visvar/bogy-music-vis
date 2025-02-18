@@ -16,6 +16,12 @@ Artistic music visualization with PyGame
 - `py game.py`
 
 
+## Add New Music
+
+- Add .mp3 file in `audio/` folder
+- `py preprocess.py`
+
+
 ## PyGame
 
 - https://coderslegacy.com/python/python-pygame-tutorial/
