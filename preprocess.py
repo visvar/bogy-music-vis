@@ -3,10 +3,11 @@ import json
 import librosa.display
 import librosa.feature
 import numpy as np
+import pandas as pd
    
 
 # Fallback WAV file (set your default file path here)
-FALLBACK_WAV_FILE = os.path.join("audio", "default.wav")
+FALLBACK_WAV_FILE = os.path.join("audio", "IRIS.wav")
 
 def process_audio(file_path):
     """Load a WAV file and extract spectral features at 60 FPS."""
@@ -44,6 +45,8 @@ def process_audio(file_path):
         "brightness": spec.tolist(),
     }
 
+    print(f"Processing file: 1/3")
+
      # 1️⃣ Extract Frequencies (Pitch Tracking)
     fmin = librosa.note_to_hz('C1')  # Lower bound (~32 Hz)
     fmax = librosa.note_to_hz('C8')  # Upper bound (~4186 Hz)
@@ -80,6 +83,8 @@ def process_audio(file_path):
     data["time_since_last_beat"] = time_since_last_beat.tolist()
     data["time_until_next_beat"] = time_until_next_beat.tolist()
 
+    print(f"Processing file: 2/3")
+
     # Chroma Features (Captures harmonic structure)
     chroma = librosa.feature.chroma_stft(y=x, sr=Fs, n_fft=N, hop_length=H)
     chroma_labels = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -91,6 +96,8 @@ def process_audio(file_path):
     mfcc = librosa.feature.mfcc(y=x, sr=Fs, n_mfcc=13, hop_length=H)
     for i in range(13):
         data[f"mfcc_{i}"] = mfcc[i].tolist()
+
+    print(f"Processing file: 3/3")
 
     return data
 
@@ -120,6 +127,7 @@ def main():
 
     # Output CSV file in the same "audio" directory
     output_file = wav_file.replace('.wav', '.csv')
+    print(f"Write file: {output_file}")
     save_to_csv(data, output_file)
 
 if __name__ == '__main__':
