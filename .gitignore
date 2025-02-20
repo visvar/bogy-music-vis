@@ -1,5 +1,5 @@
 # do not commit audio files
-
+audio/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
