@@ -14,10 +14,11 @@ dt = 0
 circle_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
 
-music_file = "../audio/happinezz.mp3"
+music_file = "./audio/IRIS.wav"
 pygame.mixer.music.load(music_file)
 # load prepared data with audio features
-# data = pd.read_csv(music_file + "_data.csv").values
+data_file = music_file.replace(".wav", ".csv")
+data = pd.read_csv(data_file)
 
 print(f"loading finished for {music_file}")
 
@@ -39,7 +40,7 @@ while running:
 
 
     # keyboard input
-    pygame.draw.circle(screen, "cyan", circle_position, 40)
+    #pygame.draw.circle(screen, "cyan", circle_position, 40)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         circle_position.y -= 300 * dt
@@ -52,7 +53,6 @@ while running:
 
     # mouse input
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    print(mouse_x, mouse_y)
     is_pressed = pygame.mouse.get_pressed()[0]
     if is_pressed:
         radius = 20
@@ -65,8 +65,64 @@ while running:
     seconds = time/1000
 
     # get current music features
-    frame = time * 60
-    # features = data[frame]
+    frame = int(seconds * 60)
+
+    features = data.iloc[frame]
+
+    energy = features["energy"]
+    brightness = features["brightness"]
+    fundamental_frequencies = features["fundamental_frequencies"]
+    time_since_last_beat= features["time_since_last_beat"]
+    time_until_next_beat= features["time_until_next_beat"]
+    chroma_C= features["chroma_C"]
+    chroma_Cs= features["chroma_C#"]
+    chroma_D= features["chroma_D"]
+    chroma_Ds= features["chroma_D#"]
+    chroma_E= features["chroma_E"]
+    chroma_F= features["chroma_F"]
+    chroma_Fs= features["chroma_F#"]
+    chroma_G= features["chroma_G"]
+    chroma_Gs= features["chroma_G#"]
+    chroma_A= features["chroma_A"]
+    chroma_As= features["chroma_A#"]
+    chroma_B= features["chroma_B"]
+    mfcc_0= features["mfcc_0"]
+    mfcc_1= features["mfcc_1"]
+    mfcc_2= features["mfcc_2"]
+    mfcc_3= features["mfcc_3"]
+    mfcc_4= features["mfcc_4"]
+    mfcc_5= features["mfcc_5"]
+    mfcc_6= features["mfcc_6"]
+    mfcc_7= features["mfcc_7"]
+    mfcc_8= features["mfcc_8"]
+    mfcc_9= features["mfcc_9"]
+    mfcc_10= features["mfcc_10"]
+    mfcc_11= features["mfcc_11"]
+    mfcc_12= features["mfcc_12"]
+
+
+    WIDTH, HEIGHT = 800, 600
+    chroma_labels = ["chroma_C", "chroma_C#", "chroma_D", "chroma_D#", "chroma_E", 
+                 "chroma_F", "chroma_F#", "chroma_G", "chroma_G#", "chroma_A", 
+                 "chroma_A#", "chroma_B"]
+    # Bar Chart Settings
+    BAR_WIDTH = WIDTH // len(chroma_labels)
+    MAX_BAR_HEIGHT = HEIGHT // 2
+    # Draw bars
+    for i, value in enumerate(chroma_labels):
+        bar_height = int((features[value] / 10) * MAX_BAR_HEIGHT)
+        pygame.draw.rect(screen, (0, 255, 0), 
+                         (i * BAR_WIDTH, HEIGHT - bar_height, BAR_WIDTH - 5, bar_height))
+
+    # Flash Effect
+    flash_size = int(energy * 800)  # Larger flash with higher energy
+    flash_brightness = min(255, int((brightness / 5000) * 255))
+
+
+    flash_color = (flash_brightness, flash_brightness, flash_brightness)  # White flash
+    flash_rect = pygame.Rect((WIDTH // 2 - flash_size // 2, HEIGHT // 2 - flash_size // 2, flash_size, flash_size))
+    
+    pygame.draw.ellipse(screen, flash_color, flash_rect)
 
 
     # flip() the display to put your work on screen
