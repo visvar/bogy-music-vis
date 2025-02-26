@@ -60,28 +60,31 @@ def process_audio(file_path):
     beat_times = librosa.frames_to_time(beat_frames, sr=Fs, hop_length=H)
 
     # Compute "time since last beat" and "time until next beat"
-    time_since_last_beat = np.zeros_like(time_steps)
-    time_until_next_beat = np.zeros_like(time_steps)
+    time_since_last_beat = np.zeros(num_frames)
+    time_until_next_beat = np.zeros(num_frames)
 
-    for i, t in enumerate(time_steps):
-        past_beats = beat_times[beat_times <= t]
-        future_beats = beat_times[beat_times > t]
+    print(time_since_last_beat, num_frames)
+
+    for i in range(num_frames):
+        
+        past_beats = beat_frames[beat_frames <= i]
+        future_beats = beat_frames[beat_frames > i]
 
         # Time since last beat
         if len(past_beats) > 0:
-            time_since_last_beat[i] = t - past_beats[-1]
+            time_since_last_beat[i] = i - past_beats[-1]
         else:
             time_since_last_beat[i] = 0 # No past beat yet
 
         # Time until next beat
         if len(future_beats) > 0:
-            time_until_next_beat[i] = future_beats[0] - t
+            time_until_next_beat[i] = future_beats[0] - i
         else:
             time_until_next_beat[i] = 0  # No future beat left
 
     # Add beat features to data
-    data["time_since_last_beat"] = time_since_last_beat.tolist()
-    data["time_until_next_beat"] = time_until_next_beat.tolist()
+    data["frames_since_last_beat"] = time_since_last_beat.tolist()
+    data["frames_until_next_beat"] = time_until_next_beat.tolist()
 
     print(f"Processing file: 2/3")
 
