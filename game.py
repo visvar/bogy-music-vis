@@ -120,9 +120,9 @@ while running:
 
 
     flash_color = (flash_brightness, flash_brightness, flash_brightness)  # White flash
-    flash_rect = pygame.Rect((WIDTH // 2 - flash_size // 2, HEIGHT // 2 - flash_size // 2, flash_size, flash_size))
+
     
-    pygame.draw.ellipse(screen, flash_color, flash_rect)
+    pygame.draw.circle(screen, flash_color, circle_position, flash_size)
 
 
     # flip() the display to put your work on screen
