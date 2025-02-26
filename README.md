@@ -18,8 +18,9 @@ Artistic music visualization with PyGame
 
 ## Add New Music
 
-- Add .mp3 file in `audio/` folder
+- Add .wav or .mp3 file in `audio/` folder
 - `py preprocess.py`
+- `py preprocess.py IRIS.wav` (replace IRIS.wav with you filename)
 
 
 ## PyGame
