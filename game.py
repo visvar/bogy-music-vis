@@ -124,6 +124,9 @@ while running:
                              r,
                              r*2))
 
+    # progress bar
+    pygame.draw.rect(screen, (8, 8, 8), (0, window_size[1]-10, window_size[0], 10))
+    pygame.draw.rect(screen, (64, 64, 64), (0, window_size[1]-10, window_size[0]*seconds/274, 10))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
