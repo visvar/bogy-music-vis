@@ -2,11 +2,13 @@
 import pygame
 from pygame.locals import *
 import pandas as pd
+import math
 
+window_size = (1280, 720)
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode(window_size)
 clock = pygame.time.Clock()
 running = True
 dt = 0
@@ -14,7 +16,7 @@ dt = 0
 circle_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
 
-music_file = "./audio/IRIS.wav"
+music_file = "./audio/pixlaxdax.wav"
 pygame.mixer.music.load(music_file)
 # load prepared data with audio features
 data_file = music_file.replace(".wav", ".csv")
@@ -26,6 +28,7 @@ print(f"loading finished for {music_file}")
 pygame.mixer.music.play(-1)
 
 
+overlay = pygame.Surface(window_size, pygame.SRCALPHA)
 
 
 while running:
@@ -35,9 +38,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
-
 
     # keyboard input
     #pygame.draw.circle(screen, "cyan", circle_position, 40)
@@ -64,65 +65,64 @@ while running:
     time = pygame.mixer.music.get_pos()
     seconds = time/1000
 
+
+
     # get current music features
     frame = int(seconds * 60)
+    step = 1
+    steps = 80
+    for f in range(0, steps):
 
-    features = data.iloc[frame]
+        if frame-f*step < 0:
+            break
+        features = data.iloc[frame-(steps-f)*step]
 
-    energy = features["energy"]
-    brightness = features["brightness"]
-    fundamental_frequencies = features["fundamental_frequencies"]
-    frames_since_last_beat= features["frames_since_last_beat"]
-    frames_until_next_beat= features["frames_until_next_beat"]
-    chroma_C= features["chroma_C"]
-    chroma_Cs= features["chroma_C#"]
-    chroma_D= features["chroma_D"]
-    chroma_Ds= features["chroma_D#"]
-    chroma_E= features["chroma_E"]
-    chroma_F= features["chroma_F"]
-    chroma_Fs= features["chroma_F#"]
-    chroma_G= features["chroma_G"]
-    chroma_Gs= features["chroma_G#"]
-    chroma_A= features["chroma_A"]
-    chroma_As= features["chroma_A#"]
-    chroma_B= features["chroma_B"]
-    mfcc_0= features["mfcc_0"]
-    mfcc_1= features["mfcc_1"]
-    mfcc_2= features["mfcc_2"]
-    mfcc_3= features["mfcc_3"]
-    mfcc_4= features["mfcc_4"]
-    mfcc_5= features["mfcc_5"]
-    mfcc_6= features["mfcc_6"]
-    mfcc_7= features["mfcc_7"]
-    mfcc_8= features["mfcc_8"]
-    mfcc_9= features["mfcc_9"]
-    mfcc_10= features["mfcc_10"]
-    mfcc_11= features["mfcc_11"]
-    mfcc_12= features["mfcc_12"]
+        energy = features["energy"]
+        brightness = features["brightness"]
+        fundamental_frequencies = features["fundamental_frequencies"]
+        frames_since_last_beat= features["frames_since_last_beat"]
+        frames_until_next_beat= features["frames_until_next_beat"]
+        chroma_C= features["chroma_C"]
+        chroma_Cs= features["chroma_C#"]
+        chroma_D= features["chroma_D"]
+        chroma_Ds= features["chroma_D#"]
+        chroma_E= features["chroma_E"]
+        chroma_F= features["chroma_F"]
+        chroma_Fs= features["chroma_F#"]
+        chroma_G= features["chroma_G"]
+        chroma_Gs= features["chroma_G#"]
+        chroma_A= features["chroma_A"]
+        chroma_As= features["chroma_A#"]
+        chroma_B= features["chroma_B"]
 
+        chroma_labels = ["chroma_C", "chroma_C#", "chroma_D", "chroma_D#", "chroma_E",
+                    "chroma_F", "chroma_F#", "chroma_G", "chroma_G#", "chroma_A",
+                    "chroma_A#", "chroma_B"]
+        # Bar Chart Settings
+        x_step = 15
+        max_radius = window_size[1] / 13
+        # fade
+        # fade color
+        if energy < 10:
+            fade_color = (8, 16, 0, 16)
+        else:
+            fade_color = (16, 8, 0, 16)
 
-    WIDTH, HEIGHT = 800, 600
-    chroma_labels = ["chroma_C", "chroma_C#", "chroma_D", "chroma_D#", "chroma_E", 
-                 "chroma_F", "chroma_F#", "chroma_G", "chroma_G#", "chroma_A", 
-                 "chroma_A#", "chroma_B"]
-    # Bar Chart Settings
-    BAR_WIDTH = WIDTH // len(chroma_labels)
-    MAX_BAR_HEIGHT = HEIGHT // 2
-    # Draw bars
-    for i, value in enumerate(chroma_labels):
-        bar_height = int((features[value] / 10) * MAX_BAR_HEIGHT)
-        pygame.draw.rect(screen, (0, 255, 0), 
-                         (i * BAR_WIDTH, HEIGHT - bar_height, BAR_WIDTH - 5, bar_height))
-
-    # Flash Effect
-    flash_size = int(energy * 800)  # Larger flash with higher energy
-    flash_brightness = min(255, int((brightness / 5000) * 255))
-
-
-    flash_color = (flash_brightness, flash_brightness, flash_brightness)  # White flash
-
-    
-    pygame.draw.circle(screen, flash_color, circle_position, flash_size)
+        overlay.fill(fade_color)
+        screen.blit(overlay, (0, 0))
+        # Draw bars
+        for i, value in enumerate(chroma_labels):
+            r = int((features[value] / 4) * max_radius)
+            # curve up/down depending on time
+            curve = math.sin(seconds*8*(60/132)) * (steps-f) * (6-i)/10
+            x = window_size[0] -f * x_step + math.cos(i/6*math.pi)*30
+            y = max_radius*(i+1)-r
+            pygame.draw.ellipse(screen,
+                            (255, 255, 0),
+                            (x,
+                             y+curve,
+                             r,
+                             r*2))
 
 
     # flip() the display to put your work on screen

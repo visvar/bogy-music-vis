@@ -4,14 +4,14 @@ import librosa.display
 import librosa.feature
 import numpy as np
 import pandas as pd
-   
+
 
 # Fallback WAV file (set your default file path here)
-FALLBACK_WAV_FILE = os.path.join("audio", "IRIS.wav")
+FALLBACK_WAV_FILE = os.path.join("audio", "pixlaxdax.wav")
 
 def process_audio(file_path):
     """Load a WAV file and extract spectral features at 60 FPS."""
-    
+
     if not os.path.exists(file_path):
         print(f"Error: File '{file_path}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -66,7 +66,7 @@ def process_audio(file_path):
     print(time_since_last_beat, num_frames)
 
     for i in range(num_frames):
-        
+
         past_beats = beat_frames[beat_frames <= i]
         future_beats = beat_frames[beat_frames > i]
 
@@ -91,8 +91,8 @@ def process_audio(file_path):
     # Chroma Features (Captures harmonic structure)
     chroma = librosa.feature.chroma_stft(y=x, sr=Fs, n_fft=N, hop_length=H)
     chroma_labels = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-    
-    for i, label in enumerate(chroma_labels):  
+
+    for i, label in enumerate(chroma_labels):
         data[f"chroma_{label}"] = chroma[i].tolist()
 
     # MFCCs (Captures timbre)
@@ -106,7 +106,7 @@ def process_audio(file_path):
 
 def save_to_csv(data, output_file):
     """Save extracted audio features to a CSV file."""
-    
+
     df = pd.DataFrame(data)
     try:
         df.to_csv(output_file, index=False)
@@ -135,4 +135,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
