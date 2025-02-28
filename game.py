@@ -114,7 +114,7 @@ while running:
         for i, value in enumerate(chroma_labels):
             r = int((features[value] / 4) * max_radius)
             # curve up/down depending on time
-            curve = math.sin(seconds*8*(60/132)) * (steps-f) * (6-i)/10
+            curve = math.cos(seconds*math.pi*132/120) * (steps-f) * (6-i)/10
             x = window_size[0] -f * x_step + math.cos(i/6*math.pi)*30
             y = max_radius*(i+1)-r
             pygame.draw.ellipse(screen,
