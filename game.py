@@ -2,6 +2,7 @@
 import pygame
 from pygame.locals import *
 import pandas as pd
+import sys, os
 
 
 # pygame setup
@@ -13,17 +14,29 @@ dt = 0
 
 circle_position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
+FALLBACK_WAV_FILE = os.path.join("audio", "IRIS.wav")
 
-music_file = "./audio/IRIS.wav"
+if len(sys.argv) > 1:
+    music_file = os.path.join("audio", sys.argv[1])  # Ensure file is in "audio" folder
+else:
+    music_file = FALLBACK_WAV_FILE  # Use fallback if no argument is given
+
+
+#music_file = "./audio/IRIS.wav"
 pygame.mixer.music.load(music_file)
 # load prepared data with audio features
-data_file = music_file.replace(".wav", ".csv")
+if music_file.endswith('.wav'):
+    data_file = music_file.replace('.wav', '.csv')
+elif music_file.endswith('.mp3'):
+    data_file = music_file.replace('.mp3', '.csv')
+#data_file = music_file.replace(".wav", ".csv")
 data = pd.read_csv(data_file)
 
 print(f"loading finished for {music_file}")
 
 # play and loop forever
 pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.7)
 
 
 

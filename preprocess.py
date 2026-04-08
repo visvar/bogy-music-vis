@@ -129,7 +129,10 @@ def main():
     data = process_audio(wav_file)
 
     # Output CSV file in the same "audio" directory
-    output_file = wav_file.replace('.wav', '.csv')
+    if wav_file.endswith('.wav'):
+        output_file = wav_file.replace('.wav', '.csv')
+    elif wav_file.endswith('.mp3'):
+        output_file = wav_file.replace('.mp3', '.csv')
     print(f"Write file: {output_file}")
     save_to_csv(data, output_file)
 
