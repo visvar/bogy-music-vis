@@ -3,11 +3,16 @@ import pygame
 from pygame.locals import *
 import pandas as pd
 import sys, os
+import cv2
+import numpy as np
+import subprocess
 
+
+window_size = (1280, 720)
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode(window_size)
 clock = pygame.time.Clock()
 running = True
 dt = 0
@@ -38,7 +43,21 @@ print(f"loading finished for {music_file}")
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.7)
 
-
+# Record video as output
+output_file = data_file.replace('.csv', '_temp.mp4').replace('audio\\', '') 
+video_file = data_file.replace('.csv', '.mp4').replace('audio\\', '') 
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+video = cv2.VideoWriter(output_file, fourcc, 60, window_size)
+cmd = [
+    "ffmpeg",
+    "-y",
+    "-i", output_file,
+    "-i", music_file,
+    "-c:v", "copy",
+    "-c:a", "aac",
+    "-shortest",
+    video_file
+]
 
 
 while running:
@@ -143,5 +162,19 @@ while running:
 
     # limits FPS to 60
     dt = clock.tick(60) / 1000
+
+
+    # video recording
+    frame = pygame.surfarray.array3d(screen)
+    frame = np.transpose(frame, (1, 0, 2))  # Pygame -> OpenCV format
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    video.write(frame)
+
+
+# video output and sound merge
+video.release()
+subprocess.run(cmd)
+if os.path.exists(output_file):
+    os.remove(output_file)
 
 pygame.quit()
