@@ -1,11 +1,11 @@
 # bogy-music-vis
 
-Artistic music visualization with PyGame
+Artistic music visualization with PyGame for python 3.10 - 3.13
 
 
 ## Setup
 
-- `py -m venv .venv`
+- `python -m venv .venv`
 - Windows: `.venv\Scripts\activate`, Other: `source .venv/bin/activate`
 - `pip install -r .\requirements.txt`
 - If pygame install has issues: `py -m pip install -U pygame`
@@ -13,14 +13,14 @@ Artistic music visualization with PyGame
 
 ## Start Game
 
-- `py game.py`
+- `python game.py`
 
 
 ## Add New Music
 
 - Add .wav or .mp3 file in `audio/` folder
-- `py preprocess.py`
-- `py preprocess.py IRIS.wav` (replace IRIS.wav with you filename)
+- `python preprocess.py`
+- `python preprocess.py IRIS.wav` (replace IRIS.wav with you filename)
 
 
 ## PyGame
