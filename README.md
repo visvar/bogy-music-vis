@@ -26,6 +26,9 @@ https://docs.google.com/presentation/d/1WAw0krJXZjp1Y4xFvjMmem2Q7ye7HvdrlRjKREvM
 - `python preprocess.py IRIS.wav` (replace IRIS.wav with you filename)
 
 
+## Pre-build functions
+gameBausteine.py includes some nice visualizations as functions and can be used for the beginning.
+
 ## PyGame
 
 - https://coderslegacy.com/python/python-pygame-tutorial/
