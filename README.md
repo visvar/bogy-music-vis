@@ -1,6 +1,6 @@
 # bogy-music-vis
 
-Artistic music visualization with PyGame for python 3.10 - 3.13
+Artistic music visualization with PyGame for python 3.13
 
 Slides:
 https://docs.google.com/presentation/d/1WAw0krJXZjp1Y4xFvjMmem2Q7ye7HvdrlRjKREvM8Vg/edit?usp=sharing
